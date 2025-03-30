@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>卡牌编辑器</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+<header>
+    <div class="header-content">
+        <h1>卡牌编辑器</h1>
+        <div class="theme-toggle">
+            <label class="switch" for="theme-switch">
+                <input type="checkbox" id="theme-switch">
+                <span class="slider round"></span>
+                <span class="toggle-label">黑暗模式</span>
+            </label>
+        </div>
+    </div>
+</header>
+        
+        <div class="app-layout">
+            <!-- 左侧：卡牌编辑区 -->
+            <div class="editor-column">
+                <div class="editor-section">
+                    <h2>卡牌编辑</h2>
+                    <form id="card-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="card-name">卡牌名称</label>
+                                <input type="text" id="card-name" required placeholder="输入卡牌名称">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="card-cost">卡牌费用</label>
+                                <div class="element-costs">
+                                    <div class="element-cost">
+                                        <label>木</label>
+                                        <input type="number" id="cost-wood" class="cost-input" min="0" value="0">
+                                    </div>
+                                    <div class="element-cost">
+                                        <label>火</label>
+                                        <input type="number" id="cost-fire" class="cost-input" min="0" value="0">
+                                    </div>
+                                    <div class="element-cost">
+                                        <label>土</label>
+                                        <input type="number" id="cost-earth" class="cost-input" min="0" value="0">
+                                    </div>
+                                    <div class="element-cost">
+                                        <label>金</label>
+                                        <input type="number" id="cost-metal" class="cost-input" min="0" value="0">
+                                    </div>
+                                    <div class="element-cost">
+                                        <label>水</label>
+                                        <input type="number" id="cost-water" class="cost-input" min="0" value="0">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="rune-container">符文槽位：</label>
+                                <p class="form-hint">从预定义的符文列表中选择，鼠标悬停在预览中的符文上可查看效果描述</p>
+                                <div id="rune-container">
+                                    <button type="button" id="add-rune" class="btn-small">+ 添加符文</button>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="card-image-upload">卡牌图片</label>
+                                <div class="image-upload">
+                                    <input type="file" id="card-image-upload" accept="image/jpeg, image/png, image/jpg">
+                                    <button type="button" id="clear-image" class="btn-small">清除图片</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="card-description">卡牌描述</label>
+                            <textarea id="card-description" required></textarea>
+                        </div>
+                        
+                        <div class="button-group">
+                            <button type="button" id="save-card" class="btn">保存卡牌</button>
+                            <button type="button" id="export-card" class="btn">导出卡牌</button>
+                            <button type="button" id="clear-form" class="btn">清空表单</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- 右侧：预览和卡组管理区 -->
+            <div class="preview-deck-column">
+                <!-- 卡牌预览 -->
+                <div class="preview-section">
+                    <h2>卡牌预览</h2>
+                    <div id="card-preview" class="card-preview">
+                        <div class="card">
+                            <div class="card-name"></div>
+                            <div class="card-cost"></div>
+                            <div class="card-image"></div>
+                            <div class="card-description"></div>
+                            <div class="card-runes"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 卡组管理 -->
+                <div class="deck-section">
+                    <div class="deck-header">
+                        <h2>卡组管理</h2>
+                        <div class="deck-controls">
+                            <button type="button" id="import-deck" class="btn-small">导入</button>
+                            <button type="button" id="export-deck" class="btn-small">导出</button>
+                            <button type="button" id="clear-deck" class="btn-small">清空</button>
+                        </div>
+                    </div>
+                    <div id="deck-container" class="deck-container"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 底部多功能区 -->
+        <div class="multi-function-area">
+            <div class="function-tabs">
+                <button class="tab-button active" data-tab="deck-analysis">卡组分析</button>
+                <button class="tab-button" data-tab="import-export">导入导出</button>
+                <button class="tab-button" data-tab="help">使用帮助</button>
+            </div>
+            
+            <div class="tab-content">
+                <!-- 卡组分析面板 -->
+                <div id="deck-analysis" class="tab-pane active">
+                    <div class="deck-stats">
+                        <div class="stats-row">
+                            <!-- 卡组风格 -->
+                            <div class="stat-item">
+                                <h3>卡组风格</h3>
+                                <div class="stat-label">
+                                    <span>主导风格</span>
+                                    <span id="deck-style-value" class="stat-value">平衡</span>
+                                </div>
+                                <div class="stat-bars">
+                                    <div class="stat-label">
+                                        <span>快攻</span>
+                                        <span id="aggro-value">0%</span>
+                                    </div>
+                                    <div class="stat-bar-container">
+                                        <div id="aggro-bar" class="stat-bar aggro" style="width: 0%"></div>
+                                    </div>
+                                    
+                                    <div class="stat-label">
+                                        <span>运营</span>
+                                        <span id="control-value">0%</span>
+                                    </div>
+                                    <div class="stat-bar-container">
+                                        <div id="control-bar" class="stat-bar control" style="width: 0%"></div>
+                                    </div>
+                                    
+                                    <div class="stat-label">
+                                        <span>OTK</span>
+                                        <span id="combo-value">0%</span>
+                                    </div>
+                                    <div class="stat-bar-container">
+                                        <div id="combo-bar" class="stat-bar combo" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 费用分布 -->
+                            <div class="stat-item">
+                                <h3>费用分布</h3>
+                                <div class="stat-label">
+                                    <span>平均费用</span>
+                                    <span id="avg-cost-value" class="stat-value">0</span>
+                                </div>
+                                <div id="cost-distribution" class="cost-distribution">
+                                    <div class="cost-axis"></div>
+                                    <!-- 费用柱状图将由JS动态生成 -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 导入导出面板 -->
+                <div id="import-export" class="tab-pane">
+                    <div class="import-export-section">
+                        <h3>Markdown导入/导出</h3>
+                        <p class="section-description">在下方粘贴Markdown格式的卡牌或卡组，或者将导出的内容复制到其他地方保存。</p>
+                        <div class="markdown-container">
+                            <textarea id="markdown-content" placeholder="粘贴Markdown格式的卡牌或卡组..."></textarea>
+                            <div class="button-group">
+                                <button type="button" id="import-markdown" class="btn">导入</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 使用帮助面板 -->
+                <div id="help" class="tab-pane">
+                    <div class="help-section">
+                        <h3>使用帮助</h3>
+                        <div class="help-content">
+                            <h4>基本操作</h4>
+                            <ul>
+                                <li><strong>创建卡牌</strong>：在左侧编辑区填写卡牌信息，点击"保存卡牌"添加到卡组。</li>
+                                <li><strong>编辑卡牌</strong>：点击卡组中卡牌的"编辑"按钮，修改后可选择覆盖原卡牌或创建新卡牌。</li>
+                                <li><strong>预览卡牌</strong>：编辑时右上方会实时预览卡牌效果，鼠标悬停在卡组中的卡牌上也会显示预览。</li>
+                                <li><strong>导出卡牌/卡组</strong>：点击相应的导出按钮，可以获取Markdown格式的卡牌或卡组数据。</li>
+                                <li><strong>导入卡牌/卡组</strong>：在底部"导入导出"标签页中粘贴Markdown数据，点击"导入"按钮。</li>
+                            </ul>
+                            
+                            <h4>卡牌格式说明</h4>
+                            <p>卡牌使用标准Markdown格式，包含以下字段：</p>
+                            <ul>
+                                <li><strong>名称</strong>：卡牌的名称</li>
+                                <li><strong>费用</strong>：使用JSON格式表示的元素费用</li>
+                                <li><strong>描述</strong>：卡牌效果的文字描述</li>
+                                <li><strong>符文</strong>：可选的符文列表，每个符文提供额外效果</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    
+    <!-- 模态框 -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modal-title">导出卡牌</h2>
+            <div id="modal-body">
+                <textarea id="export-content" readonly></textarea>
+            </div>
+            <div class="button-group">
+                <button type="button" id="copy-export" class="btn">复制到剪贴板</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="markdown-parser.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
